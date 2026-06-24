@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('name');
             $table->text('description');
             $table->decimal('price', 8, 2);
-            $table->intager('stock');
+            $table->integer('stock');
             $table->string('image');
             $table->boolean('status')
                 ->default(true);

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Product extends Model
 {
@@ -16,24 +17,42 @@ class Product extends Model
         'status',
     ];
 
+    protected function casts(): array
+    {
+        return [
+            'price' => 'decimal:2',
+            'stock' => 'integer',
+            'status' => 'boolean',
+        ];
+    }
+
+    public function getImageUrlAttribute(): ?string
+    {
+        return $this->image ? Storage::url($this->image) : null;
+    }
+
     public function category()
     {
         return $this->belongsTo(Category::class);
     }
+
     public function reviews()
     {
         return $this->hasMany(Review::class);
     }
-    public function reviews()
+
+    public function wishlistedByUsers()
     {
-        return $this->hasMany(Review::class);
+        return $this->belongsToMany(User::class, 'wishlists');
     }
-    public function reviews()
+
+    public function cartItems()
     {
-        return $this->hasMany(Review::class);
+        return $this->hasMany(CartItem::class);
     }
-    public function products()
+
+    public function orderItems()
     {
-        return $this->hasMany(User::class, 'wishlists');
+        return $this->hasMany(OrderItem::class);
     }
 }
