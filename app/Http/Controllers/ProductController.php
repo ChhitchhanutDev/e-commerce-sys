@@ -68,24 +68,27 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
-    {
-        $product = Product::findOrFail($id);
 
+    public function update(Request $request, Product $product)
+    {
         $validated = $request->validate([
-            'category_id' => 'required|exists:categories,id',
-            'name' => 'required|string|max:255',
-            'description' => 'required|string',
-            'price' => 'required|numeric|min:0|max:999999.99',
-            'stock' => 'required|integer|min:0',
-            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'category_id' => 'required',
+            'name' => 'required',
+            'description' => 'required',
+            'price' => 'required',
+            'stock' => 'required',
+            'image' => 'nullable|image',
             'status' => 'nullable|boolean',
         ]);
 
         if ($request->hasFile('image')) {
-            Storage::disk('public')->delete($product->image);
 
-            $validated['image'] = $request->file('image')->store('products', 'public');
+            if ($product->image) {
+                Storage::disk('public')->delete($product->image);
+            }
+
+            $validated['image'] =
+                $request->file('image')->store('products', 'public');
         }
 
         $validated['status'] = $request->boolean('status');

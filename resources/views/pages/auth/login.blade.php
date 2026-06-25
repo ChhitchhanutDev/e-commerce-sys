@@ -18,22 +18,10 @@
         <form method="POST" action="{{ route('auth.login') }}" class="mt-8 space-y-5" novalidate>
             @csrf
 
-            <x-ui.form-field
-                name="email"
-                label="Email Address"
-                type="email"
-                placeholder="admin@example.com"
-                required
-                autofocus
-            />
+            <x-ui.form-field name="email" label="Email Address" type="email" placeholder="admin@example.com" required
+                autofocus />
 
-            <x-ui.form-field
-                name="password"
-                label="Password"
-                type="password"
-                placeholder="Enter your password"
-                required
-            />
+            <x-ui.form-field name="password" label="Password" type="password" placeholder="Enter your password" required />
 
             <x-ui.button type="submit" class="w-full">
                 Login
