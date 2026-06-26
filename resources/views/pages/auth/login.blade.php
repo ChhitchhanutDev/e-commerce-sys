@@ -3,7 +3,12 @@
 @section('title', 'Admin Login')
 
 @section('content')
-    <x-ui.card class="w-full max-w-md p-8">
+    <div>
+        <div class="mb-8 flex justify-center">
+            <img src="{{ Storage::url('logo.png') }}" alt="Logo" class="h-16 w-16 rounded-full object-cover">
+        </div>
+
+        <x-ui.card class="w-full max-w-md p-8">
         <header class="text-center">
             <h1 class="text-2xl font-semibold tracking-tight text-slate-900">Admin Login</h1>
             <p class="mt-2 text-sm text-slate-500">Sign in to manage the store catalog.</p>
@@ -28,4 +33,5 @@
             </x-ui.button>
         </form>
     </x-ui.card>
+    </div>
 @endsection

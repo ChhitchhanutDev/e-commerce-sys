@@ -37,7 +37,7 @@ class AuthController extends Controller
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'role' => $request->role,
+            'role' => 'user',
             'password' => Hash::make($request->password),
         ]);
 
@@ -89,7 +89,15 @@ class AuthController extends Controller
             ], 403);
         }
 
-        // 5. Create token (Sanctum)
+        // 5. Check if account is suspended
+        if (!$user->is_active) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Your account has been suspended. Contact support.',
+            ], 403);
+        }
+
+        // 6. Create token (Sanctum)
         $token = $user->createToken('API Token')->plainTextToken;
 
         // 6. Response

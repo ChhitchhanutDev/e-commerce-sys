@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -19,18 +21,24 @@ class AuthController extends Controller
             'password'  => 'required',
         ]);
 
-        if (Auth::attempt([
-            'email'     => $credentials['email'],
-            'password'  => $credentials['password'],
-            'role'      => 'admin',
-        ])) {
-            $request->session()->regenerate();
-            return redirect()->route('dashboard');
+        $user = User::where('email', $credentials['email'])->first();
+
+        if (!$user || !Hash::check($credentials['password'], $user->password) || $user->role !== 'admin') {
+            return back()->withErrors([
+                'email' => 'Invalid credentials.',
+            ]);
         }
 
-        return back()->withErrors([
-            'email' => 'Invalid credentials.',
-        ]);
+        if (!$user->is_active) {
+            return back()->withErrors([
+                'email' => 'Your account has been suspended. Contact support.',
+            ]);
+        }
+
+        Auth::login($user);
+        $request->session()->regenerate();
+
+        return redirect()->route('dashboard');
     }
 
     public function logout(Request $request)

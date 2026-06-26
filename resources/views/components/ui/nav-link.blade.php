@@ -7,8 +7,8 @@
     href="{{ $href }}"
     @class([
         'block rounded-lg px-4 py-2.5 text-sm font-medium transition',
-        'bg-white/10 text-white' => $active,
-        'text-slate-300 hover:bg-white/10 hover:text-white' => ! $active,
+        'bg-blue-100 text-slate-700' => $active,
+        'text-slate-500 hover:bg-blue-100/50 hover:text-slate-700' => ! $active,
     ])
 >
     {{ $slot }}
