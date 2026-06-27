@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        if (!Schema::hasColumn('cart_items', 'cart_id')) {
+        if (! Schema::hasColumn('cart_items', 'cart_id')) {
             Schema::table('cart_items', function (Blueprint $table) {
                 $table->dropForeign(['card_id']);
             });

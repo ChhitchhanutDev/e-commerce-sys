@@ -99,5 +99,11 @@
                 </tbody>
             </table>
         </div>
+
+        @if ($products->hasPages())
+            <div class="border-t border-slate-200 px-6 py-4">
+                {{ $products->links() }}
+            </div>
+        @endif
     </x-ui.card>
 @endsection

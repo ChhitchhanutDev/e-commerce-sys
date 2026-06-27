@@ -15,18 +15,11 @@ class ProductController extends Controller
     public function index()
     {
         $products = Product::with('category')->paginate(10);
+
         return response()->json([
             'success' => true,
-            'data'    => $products
+            'data' => $products,
         ], Response::HTTP_OK);
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
     }
 
     /**
@@ -34,11 +27,12 @@ class ProductController extends Controller
      */
     public function show(string $id)
     {
-        $product = Product::findOrFail($id);
+        $product = Product::with('category')->findOrFail($id);
+
         return response()->json([
             'success' => true,
-            'data'    => $product
-        ], Response::HTTP_OK);
+            'data' => $product,
+        ]);
     }
 
     /**
@@ -48,7 +42,7 @@ class ProductController extends Controller
     {
         $keyword = $request->query('q');
 
-        $products = Product::query()
+        $products = Product::with('category')
             ->when($keyword, function ($query) use ($keyword) {
                 $query->where('name', 'like', "%{$keyword}%")
                     ->orWhere('description', 'like', "%{$keyword}%");
@@ -57,23 +51,7 @@ class ProductController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $products
+            'data' => $products,
         ]);
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
     }
 }

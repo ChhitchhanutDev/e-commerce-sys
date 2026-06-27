@@ -1,8 +1,5 @@
 @extends('layouts.app')
 
-@section('title', 'Dashboard')
-@section('eyebrow', 'Overview')
-@section('page-title', 'Dashboard')
 
 @section('content')
     <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">

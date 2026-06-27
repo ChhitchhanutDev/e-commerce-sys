@@ -14,7 +14,8 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::with('category')->orderBy('id', 'desc')->get();
+        $products = Product::with('category')->orderBy('id', 'desc')->paginate(10);
+
         return view('pages.products.index', compact('products'));
     }
 
@@ -68,16 +69,15 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      */
-
     public function update(Request $request, Product $product)
     {
         $validated = $request->validate([
-            'category_id' => 'required',
-            'name' => 'required',
-            'description' => 'required',
-            'price' => 'required',
-            'stock' => 'required',
-            'image' => 'nullable|image',
+            'category_id' => 'required|exists:categories,id',
+            'name' => 'required|string|max:255',
+            'description' => 'required|string',
+            'price' => 'required|numeric|min:0|max:999999.99',
+            'stock' => 'required|integer|min:0',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'status' => 'nullable|boolean',
         ]);
 

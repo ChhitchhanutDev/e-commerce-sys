@@ -13,7 +13,8 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = Category::orderBy('id', 'desc')->get();
+        $categories = Category::orderBy('id', 'desc')->paginate(10);
+
         return view('pages.categories.index', compact('categories'));
     }
 
@@ -59,6 +60,7 @@ class CategoryController extends Controller
     public function edit(string $id)
     {
         $category = Category::findOrFail($id);
+
         return view('pages.categories.edit', compact('category'));
     }
 
@@ -93,7 +95,11 @@ class CategoryController extends Controller
      */
     public function destroy(string $id)
     {
-        $category = Category::findOrFail($id);
+        $category = Category::withCount('products')->findOrFail($id);
+
+        if ($category->products_count > 0) {
+            return back()->with('error', "Cannot delete \"{$category->name}\" — it still has {$category->products_count} product(s). Remove or reassign them first.");
+        }
 
         if ($category->image) {
             Storage::disk('public')->delete($category->image);
@@ -101,6 +107,6 @@ class CategoryController extends Controller
 
         $category->delete();
 
-        return redirect('/categories');
+        return redirect('/categories')->with('success', "Category \"{$category->name}\" deleted.");
     }
 }

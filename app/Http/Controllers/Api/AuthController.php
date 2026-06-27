@@ -11,8 +11,8 @@ use Illuminate\Validation\Rules\Password;
 
 class AuthController extends Controller
 {
-    /** 
-     * Register 
+    /**
+     * Register
      */
     public function register(Request $request)
     {
@@ -38,6 +38,7 @@ class AuthController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'role' => 'user',
+            'is_active' => true,
             'password' => Hash::make($request->password),
         ]);
 
@@ -46,13 +47,15 @@ class AuthController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Register Successfully',
-            'token' => $token,
-            'user' => $user,
+            'data' => [
+                'token' => $token,
+                'user' => $user,
+            ],
         ], 201);
     }
 
-    /** 
-     * Login 
+    /**
+     * Login
      */
     public function login(Request $request)
     {
@@ -74,7 +77,7 @@ class AuthController extends Controller
         $user = User::where('email', $request->email)->first();
 
         // 3. Check user + password
-        if (!$user || !Hash::check($request->password, $user->password)) {
+        if (! $user || ! Hash::check($request->password, $user->password)) {
             return response()->json([
                 'success' => false,
                 'message' => 'Invalid email or password.',
@@ -90,7 +93,7 @@ class AuthController extends Controller
         }
 
         // 5. Check if account is suspended
-        if (!$user->is_active) {
+        if (! $user->is_active) {
             return response()->json([
                 'success' => false,
                 'message' => 'Your account has been suspended. Contact support.',
@@ -104,13 +107,15 @@ class AuthController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Login successfully',
-            'token' => $token,
-            'user' => $user,
+            'data' => [
+                'token' => $token,
+                'user' => $user,
+            ],
         ]);
     }
 
-    /** 
-     * Logout 
+    /**
+     * Logout
      */
     public function logout(Request $request)
     {
@@ -121,15 +126,60 @@ class AuthController extends Controller
             'message' => 'Logout Successfully',
         ]);
     }
-    
-    /** 
-     * Current User 
+
+    /**
+     * Current User
      */
     public function profile(Request $request)
     {
         return response()->json([
             'success' => true,
-            'user' => $request->user(),
+            'data' => [
+                'user' => $request->user(),
+            ],
+        ]);
+    }
+
+    public function updateProfile(Request $request)
+    {
+        $user = $request->user();
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,'.$user->id,
+        ]);
+
+        $user->update($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Profile updated.',
+            'data' => [
+                'user' => $user->fresh(),
+            ],
+        ]);
+    }
+
+    public function updatePassword(Request $request)
+    {
+        $user = $request->user();
+
+        $validated = $request->validate([
+            'current_password' => ['required', function ($attribute, $value, $fail) use ($user) {
+                if (! Hash::check($value, $user->password)) {
+                    $fail('The current password is incorrect.');
+                }
+            }],
+            'password' => ['required', 'confirmed', Password::min(8)],
+        ]);
+
+        $user->update([
+            'password' => Hash::make($validated['password']),
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Password changed.',
         ]);
     }
 }

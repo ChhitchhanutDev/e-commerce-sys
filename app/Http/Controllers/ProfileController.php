@@ -21,8 +21,8 @@ class ProfileController extends Controller
         $user = Auth::user();
 
         $validated = $request->validate([
-            'name'  => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $user->id,
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,'.$user->id,
         ]);
 
         $user->update($validated);
@@ -36,7 +36,7 @@ class ProfileController extends Controller
 
         $validated = $request->validate([
             'current_password' => ['required', function ($attribute, $value, $fail) use ($user) {
-                if (!Hash::check($value, $user->password)) {
+                if (! Hash::check($value, $user->password)) {
                     $fail('The current password is incorrect.');
                 }
             }],

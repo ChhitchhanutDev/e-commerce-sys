@@ -14,14 +14,14 @@ return new class extends Migration
         Schema::create('order_items', function (Blueprint $table) {
             $table->id();
             $table->foreignId('order_id')
-            ->constrained('orders')
-            ->cascadeOnDelete();
+                ->constrained('orders')
+                ->cascadeOnDelete();
             $table->foreignId('product_id')
-            ->constrained('products')
-            ->cascadeOnDelete();
+                ->constrained('products')
+                ->cascadeOnDelete();
             $table->integer('quantity');
-            $table->decimal('price',8,2);
-            $table->decimal('subtotal',8,2);
+            $table->decimal('price', 8, 2);
+            $table->decimal('subtotal', 8, 2);
             $table->timestamps();
         });
     }
