@@ -102,6 +102,14 @@ class CartController extends Controller
             'quantity' => 'required|integer|min:1',
         ]);
 
+        $product = $cartItem->product;
+        if ($product && $product->stock < $validated['quantity']) {
+            return response()->json([
+                'success' => false,
+                'message' => "Only {$product->stock} available in stock.",
+            ], 400);
+        }
+
         $cartItem->update(['quantity' => $validated['quantity']]);
 
         return response()->json([

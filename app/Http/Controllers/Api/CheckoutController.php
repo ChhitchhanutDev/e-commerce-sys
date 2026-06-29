@@ -15,6 +15,7 @@ class CheckoutController extends Controller
     {
         $validated = $request->validate([
             'shipping_address' => 'required|string',
+            'phone_number' => 'required|string|max:20',
         ]);
 
         $user = $request->user();
@@ -58,6 +59,7 @@ class CheckoutController extends Controller
                 'total_amount' => $totalAmount,
                 'status' => 'pending',
                 'shipping_address' => $validated['shipping_address'],
+                'phone_number' => $validated['phone_number'],
             ]);
 
             foreach ($cart->items as $cartItem) {

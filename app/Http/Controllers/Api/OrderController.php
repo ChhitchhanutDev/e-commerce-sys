@@ -44,6 +44,7 @@ class OrderController extends Controller
     {
         $validated = $request->validate([
             'shipping_address' => 'required|string',
+            'phone_number' => 'required|string|max:20',
             'items' => 'required|array|min:1',
             'items.*.product_id' => 'required|exists:products,id',
             'items.*.quantity' => 'required|integer|min:1',
@@ -83,6 +84,7 @@ class OrderController extends Controller
                 'total_amount' => $totalAmount,
                 'status' => 'pending',
                 'shipping_address' => $validated['shipping_address'],
+                'phone_number' => $validated['phone_number'],
             ]);
 
             foreach ($validated['items'] as $item) {

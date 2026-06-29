@@ -11,6 +11,7 @@ class Order extends Model
         'total_amount',
         'status',
         'shipping_address',
+        'phone_number',
     ];
 
     protected function casts(): array

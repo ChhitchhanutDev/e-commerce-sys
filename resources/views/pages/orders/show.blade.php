@@ -19,10 +19,18 @@
                 <table class="min-w-full divide-y divide-slate-200">
                     <thead class="bg-slate-50">
                         <tr>
-                            <th scope="col" class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">Product</th>
-                            <th scope="col" class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wide text-slate-500">Price</th>
-                            <th scope="col" class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wide text-slate-500">Qty</th>
-                            <th scope="col" class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wide text-slate-500">Subtotal</th>
+                            <th scope="col"
+                                class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+                                Product</th>
+                            <th scope="col"
+                                class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wide text-slate-500">
+                                Price</th>
+                            <th scope="col"
+                                class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wide text-slate-500">
+                                Qty</th>
+                            <th scope="col"
+                                class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wide text-slate-500">
+                                Subtotal</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-200 bg-white">
@@ -43,7 +51,8 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="4" class="px-4 py-6 text-center text-sm text-slate-500">No items in this order.</td>
+                                <td colspan="4" class="px-4 py-6 text-center text-sm text-slate-500">No items in this
+                                    order.</td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -94,12 +103,19 @@
                         </dd>
                     </div>
                     <div>
-                        <dt class="text-xs font-semibold uppercase tracking-wide text-slate-500">Placed On</dt>
-                        <dd class="mt-1 text-sm text-slate-900">{{ $order->created_at->format('F j, Y \a\t g:i A') }}</dd>
+                        <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Placed On:
+                            <span class="mt-1 text-sm text-slate-900">{{ $order->created_at->format('F j, Y \a\t g:i A') }}</span>
+                        </p>
                     </div>
                     <div>
-                        <dt class="text-xs font-semibold uppercase tracking-wide text-slate-500">Shipping Address</dt>
-                        <dd class="mt-1 text-sm text-slate-600">{{ $order->shipping_address }}</dd>
+                        <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Shipping Address:
+                            <span class="mt-1 text-sm text-slate-900">{{ $order->shipping_address }}</span>
+                        </p>
+                    </div>
+                    <div>
+                        <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Contact Number:
+                            <span class="mt-1 text-sm text-slate-900">{{ $order->phone_number }}</span>
+                        </p>
                     </div>
                 </dl>
             </x-ui.card>
