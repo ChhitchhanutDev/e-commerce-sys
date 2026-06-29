@@ -27,7 +27,8 @@ document.addEventListener('DOMContentLoaded', function () {
             return {
                 'completed': 'bg-green-100 text-green-700',
                 'pending': 'bg-amber-100 text-amber-700',
-                'cancelled': 'bg-red-100 text-red-700'
+                'cancelled': 'bg-red-100 text-red-700',
+                'delivered': 'bg-blue-100 text-blue-700'
             }[status] || '';
         }
 
@@ -35,7 +36,8 @@ document.addEventListener('DOMContentLoaded', function () {
             return {
                 'completed': 'border-green-200 bg-green-50 text-green-700',
                 'pending': 'border-amber-200 bg-amber-50 text-amber-700',
-                'cancelled': 'border-red-200 bg-red-50 text-red-700'
+                'cancelled': 'border-red-200 bg-red-50 text-red-700',
+                'delivered': 'border-blue-200 bg-blue-50 text-blue-700'
             }[status] || '';
         }
     }
@@ -86,10 +88,12 @@ document.addEventListener('DOMContentLoaded', function () {
                                         class="status-select rounded-lg border text-xs font-semibold px-2.5 py-1 outline-none focus:ring-2 focus:ring-blue-500/20
                                         {{ $order->status === 'completed' ? 'border-green-200 bg-green-50 text-green-700' : '' }}
                                         {{ $order->status === 'pending' ? 'border-amber-200 bg-amber-50 text-amber-700' : '' }}
-                                        {{ $order->status === 'cancelled' ? 'border-red-200 bg-red-50 text-red-700' : '' }}"
+                                        {{ $order->status === 'cancelled' ? 'border-red-200 bg-red-50 text-red-700' : '' }}
+                                        {{ $order->status === 'delivered' ? 'border-blue-200 bg-blue-50 text-blue-700' : '' }}"
                                     >
                                         <option value="pending" @selected($order->status === 'pending')>Pending</option>
                                         <option value="completed" @selected($order->status === 'completed')>Completed</option>
+                                        <option value="delivered" @selected($order->status === 'delivered')>Delivered</option>
                                         <option value="cancelled" @selected($order->status === 'cancelled')>Cancelled</option>
                                     </select>
                                 </form>

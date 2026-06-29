@@ -87,6 +87,7 @@
                                 'bg-green-100 text-green-700' => $order->status === 'completed',
                                 'bg-amber-100 text-amber-700' => $order->status === 'pending',
                                 'bg-red-100 text-red-700' => $order->status === 'cancelled',
+                                'bg-blue-100 text-blue-700' => $order->status === 'delivered',
                             ])>
                                 {{ ucfirst($order->status) }}
                             </span>
@@ -107,16 +108,6 @@
                 <x-ui.button :href="route('order.list')" variant="secondary">
                     Back to Orders
                 </x-ui.button>
-
-                <form method="POST" action="{{ route('order.status', $order) }}">
-                    @csrf
-                    @method('PATCH')
-
-                    <input type="hidden" name="status" value="{{ $order->status === 'cancelled' ? 'pending' : 'cancelled' }}">
-                    <x-ui.button type="submit" variant="{{ $order->status === 'cancelled' ? 'primary' : 'danger' }}">
-                        {{ $order->status === 'cancelled' ? 'Reopen Order' : 'Cancel Order' }}
-                    </x-ui.button>
-                </form>
             </div>
         </div>
     </div>

@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Storage;
 
 class Category extends Model
 {
+    protected $appends = ['image_url'];
+
     protected $fillable = [
         'name',
         'description',

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Events\NewOrder;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
+use App\Models\OrderItem;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -106,5 +107,33 @@ class OrderController extends Controller
             'message' => 'Order placed successfully.',
             'data' => $order->load('items.product'),
         ], 201);
+    }
+
+    public function purchased(Request $request)
+    {
+        $items = OrderItem::whereHas('order', function ($q) use ($request) {
+            $q->where('user_id', $request->user()->id);
+        })
+        ->whereHas('product', function ($q) {
+            $q->where('status', true);
+        })
+        ->with('product.category')
+        ->get()
+        ->groupBy('product_id')
+        ->map(function ($group) {
+            $first = $group->first();
+
+            return [
+                'product' => $first->product,
+                'total_quantity' => $group->sum('quantity'),
+                'last_purchased_at' => $group->max('created_at'),
+            ];
+        })
+        ->values();
+
+        return response()->json([
+            'success' => true,
+            'data' => $items,
+        ]);
     }
 }

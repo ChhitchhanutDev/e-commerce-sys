@@ -12,9 +12,13 @@ class ProductController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $products = Product::with('category')->paginate(10);
+        $products = Product::with('category')
+            ->when($request->query('category_id'), function ($query, $categoryId) {
+                $query->where('category_id', $categoryId);
+            })
+            ->paginate(10);
 
         return response()->json([
             'success' => true,
@@ -44,8 +48,13 @@ class ProductController extends Controller
 
         $products = Product::with('category')
             ->when($keyword, function ($query) use ($keyword) {
-                $query->where('name', 'like', "%{$keyword}%")
-                    ->orWhere('description', 'like', "%{$keyword}%");
+                $query->where(function ($q) use ($keyword) {
+                    $q->where('name', 'like', "%{$keyword}%")
+                      ->orWhere('description', 'like', "%{$keyword}%");
+                });
+            })
+            ->when($request->query('category_id'), function ($query, $categoryId) {
+                $query->where('category_id', $categoryId);
             })
             ->paginate(10);
 
