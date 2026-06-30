@@ -95,6 +95,13 @@
 
                     <hr class="border-slate-200">
 
+                    <form method="POST" action="{{ route('auth.logout') }}">
+                        @csrf
+                        <button type="submit"
+                            class="block w-full px-4 py-2.5 text-left text-sm text-slate-700 transition hover:bg-slate-50">
+                            Logout
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
