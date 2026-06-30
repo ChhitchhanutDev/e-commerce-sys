@@ -10,24 +10,12 @@ class AdminMiddleware
 {
     public function handle(Request $request, Closure $next)
     {
-        if (! Auth::check() || Auth::user()->role !== 'admin') {
-            Auth::logout();
-            $request->session()->invalidate();
-            $request->session()->regenerateToken();
-
-            return redirect()->route('login')->withErrors([
-                'email' => 'Access denied. Admins only.',
-            ]);
+        if (!Auth::check() || Auth::user()->role !== 'admin') {
+            abort(403);
         }
 
-        if (! Auth::user()->is_active) {
-            Auth::logout();
-            $request->session()->invalidate();
-            $request->session()->regenerateToken();
-
-            return redirect()->route('login')->withErrors([
-                'email' => 'Your account has been suspended.',
-            ]);
+        if (!Auth::user()->is_active) {
+            abort(403, 'Your account has been suspended.');
         }
 
         return $next($request);

@@ -10,6 +10,8 @@ class Cart extends Model
 
     protected $table = 'carts';
 
+    protected $appends = ['total'];
+
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -18,5 +20,10 @@ class Cart extends Model
     public function items()
     {
         return $this->hasMany(CartItem::class);
+    }
+
+    public function getTotalAttribute(): float
+    {
+        return round($this->items->sum(fn ($item) => $item->price * $item->quantity), 2);
     }
 }

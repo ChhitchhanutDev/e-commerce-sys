@@ -26,15 +26,11 @@ class CartController extends Controller
             ]);
         }
 
-        $total = $cart->items->sum(function ($item) {
-            return $item->price * $item->quantity;
-        });
-
         return response()->json([
             'success' => true,
             'data' => [
                 'items' => $cart->items,
-                'total' => round($total, 2),
+                'total' => $cart->total,
             ],
         ]);
     }
@@ -139,15 +135,11 @@ class CartController extends Controller
 
     private function cartData(Cart $cart): array
     {
-        $cart->load('items.product.category');
-
-        $total = $cart->items->sum(function ($item) {
-            return $item->price * $item->quantity;
-        });
+        $cart->loadMissing('items.product.category');
 
         return [
             'items' => $cart->items,
-            'total' => round($total, 2),
+            'total' => $cart->total,
         ];
     }
 }

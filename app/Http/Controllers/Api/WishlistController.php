@@ -38,7 +38,7 @@ class WishlistController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Product added to wishlist.',
-            'data' => $user->wishlists()->with('category')->get(),
+            'data' => $user->wishlists()->with('category')->paginate(10),
         ], 201);
     }
 
