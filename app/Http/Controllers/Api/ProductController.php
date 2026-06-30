@@ -15,6 +15,8 @@ class ProductController extends Controller
     public function index(Request $request)
     {
         $products = Product::with('category')
+            ->withCount('reviews')
+            ->withAvg('reviews', 'rating')
             ->when($request->query('category_id'), function ($query, $categoryId) {
                 $query->where('category_id', $categoryId);
             })
@@ -31,7 +33,10 @@ class ProductController extends Controller
      */
     public function show(string $id)
     {
-        $product = Product::with('category')->findOrFail($id);
+        $product = Product::with('category')
+            ->withCount('reviews')
+            ->withAvg('reviews', 'rating')
+            ->findOrFail($id);
 
         return response()->json([
             'success' => true,
@@ -47,10 +52,12 @@ class ProductController extends Controller
         $keyword = $request->query('q');
 
         $products = Product::with('category')
+            ->withCount('reviews')
+            ->withAvg('reviews', 'rating')
             ->when($keyword, function ($query) use ($keyword) {
                 $query->where(function ($q) use ($keyword) {
                     $q->where('name', 'like', "%{$keyword}%")
-                      ->orWhere('description', 'like', "%{$keyword}%");
+                        ->orWhere('description', 'like', "%{$keyword}%");
                 });
             })
             ->when($request->query('category_id'), function ($query, $categoryId) {

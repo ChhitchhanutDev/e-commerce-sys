@@ -43,6 +43,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/orders', [OrderController::class, 'store']);
     Route::get('/purchases', [OrderController::class, 'purchased']);
 
+    Route::get('/products/{product}/can-review', [ReviewController::class, 'canReview']);
     Route::post('/products/{product}/reviews', [ReviewController::class, 'store']);
     Route::delete('/reviews/{review}', [ReviewController::class, 'destroy']);
 });

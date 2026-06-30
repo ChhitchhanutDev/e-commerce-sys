@@ -114,7 +114,8 @@ class OrderController extends Controller
     public function purchased(Request $request)
     {
         $items = OrderItem::whereHas('order', function ($q) use ($request) {
-            $q->where('user_id', $request->user()->id);
+            $q->where('user_id', $request->user()->id)
+              ->where('status', 'completed');
         })
         ->whereHas('product', function ($q) {
             $q->where('status', true);

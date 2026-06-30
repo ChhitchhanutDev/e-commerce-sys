@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\Review;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class ReviewController extends Controller
 {
@@ -68,6 +69,31 @@ class ReviewController extends Controller
             'message' => 'Review submitted.',
             'data' => $review->load('user:id,name'),
         ], 201);
+    }
+
+    public function canReview(Request $request, Product $product)
+    {
+        $user = $request->user();
+
+        $hasPurchased = $user->orders()
+            ->where('status', 'completed')
+            ->whereHas('items', function ($q) use ($product) {
+                $q->where('product_id', $product->id);
+            })
+            ->exists();
+
+        $alreadyReviewed = Review::where('user_id', $user->id)
+            ->where('product_id', $product->id)
+            ->exists();
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'can_review' => $hasPurchased && !$alreadyReviewed,
+                'has_purchased' => $hasPurchased,
+                'already_reviewed' => $alreadyReviewed,
+            ],
+        ]);
     }
 
     public function destroy(Request $request, Review $review)
