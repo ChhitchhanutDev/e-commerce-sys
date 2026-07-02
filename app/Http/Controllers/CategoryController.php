@@ -43,7 +43,7 @@ class CategoryController extends Controller
 
         Category::create($validated);
 
-        return redirect('/categories');
+        return redirect()->route('cate.list');
     }
 
     /**
@@ -87,7 +87,7 @@ class CategoryController extends Controller
 
         $category->update($validated);
 
-        return redirect('/categories');
+        return redirect()->route('cate.list');
     }
 
     /**
@@ -107,6 +107,6 @@ class CategoryController extends Controller
 
         $category->delete();
 
-        return redirect('/categories')->with('success', "Category \"{$category->name}\" deleted.");
+        return redirect()->route('cate.list')->with('success', "Category \"{$category->name}\" deleted.");
     }
 }

@@ -22,7 +22,7 @@ class AuthController extends Controller
             'password' => [
                 'required',
                 'confirmed',
-                Password::min(8),
+                Password::min(8)->mixedCase()->numbers()->symbols()->uncompromised(),
             ],
         ]);
 
@@ -170,7 +170,7 @@ class AuthController extends Controller
                     $fail('The current password is incorrect.');
                 }
             }],
-            'password' => ['required', 'confirmed', Password::min(8)],
+            'password' => ['required', 'confirmed', Password::min(8)->mixedCase()->numbers()->symbols()->uncompromised()],
         ]);
 
         $user->update([

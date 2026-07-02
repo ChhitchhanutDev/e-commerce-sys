@@ -96,6 +96,29 @@ class ReviewController extends Controller
         ]);
     }
 
+    public function update(Request $request, Review $review)
+    {
+        if ($review->user_id !== $request->user()->id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthorized.',
+            ], 403);
+        }
+
+        $validated = $request->validate([
+            'rating' => 'required|integer|min:1|max:5',
+            'comment' => 'required|string|max:1000',
+        ]);
+
+        $review->update($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Review updated.',
+            'data' => $review->load('user:id,name'),
+        ]);
+    }
+
     public function destroy(Request $request, Review $review)
     {
         if ($review->user_id !== $request->user()->id) {

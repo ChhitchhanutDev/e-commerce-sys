@@ -7,6 +7,7 @@ use App\Models\Cart;
 use App\Models\CartItem;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class CartController extends Controller
 {
@@ -66,22 +67,26 @@ class CartController extends Controller
             ], 400);
         }
 
-        if ($existingItem) {
-            $existingItem->update([
-                'quantity' => $totalQuantity,
-            ]);
-        } else {
-            $cart->items()->create([
-                'product_id' => $validated['product_id'],
-                'quantity' => $validated['quantity'],
-                'price' => $product->price,
-            ]);
-        }
+        $result = DB::transaction(function () use ($cart, $product, $validated, $existingItem, $totalQuantity) {
+            if ($existingItem) {
+                $existingItem->update([
+                    'quantity' => $totalQuantity,
+                ]);
+            } else {
+                $cart->items()->create([
+                    'product_id' => $validated['product_id'],
+                    'quantity' => $validated['quantity'],
+                    'price' => $product->price,
+                ]);
+            }
+
+            return $this->cartData($cart);
+        });
 
         return response()->json([
             'success' => true,
             'message' => 'Item added to cart.',
-            'data' => $this->cartData($cart),
+            'data' => $result,
         ], 201);
     }
 
@@ -112,6 +117,24 @@ class CartController extends Controller
             'success' => true,
             'message' => 'Cart updated.',
             'data' => $this->cartData($cartItem->cart),
+        ]);
+    }
+
+    public function clear(Request $request)
+    {
+        $cart = Cart::where('user_id', $request->user()->id)->first();
+
+        if ($cart) {
+            $cart->items()->delete();
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Cart cleared.',
+            'data' => [
+                'items' => [],
+                'total' => 0,
+            ],
         ]);
     }
 

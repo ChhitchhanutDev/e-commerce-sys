@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CartController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\CheckoutController;
+use App\Http\Controllers\Api\ForgotPasswordController;
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\ReviewController;
@@ -20,6 +21,8 @@ Route::get('/products/{product}/reviews', [ReviewController::class, 'index']);
 
 Route::post('/register', [AuthController::class, 'register'])->middleware('throttle:10,1');
 Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:10,1');
+Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLink'])->middleware('throttle:5,1');
+Route::post('/reset-password', [ForgotPasswordController::class, 'reset'])->middleware('throttle:5,1');
 
 Route::middleware(['auth:sanctum', 'throttle:60,1'])->group(function () {
     Route::get('/profile', [AuthController::class, 'profile']);
@@ -34,6 +37,7 @@ Route::middleware(['auth:sanctum', 'throttle:60,1'])->group(function () {
     Route::get('/cart', [CartController::class, 'index']);
     Route::post('/cart', [CartController::class, 'store']);
     Route::patch('/cart/{cartItem}', [CartController::class, 'update']);
+    Route::delete('/cart', [CartController::class, 'clear']);
     Route::delete('/cart/{cartItem}', [CartController::class, 'destroy']);
 
     Route::post('/checkout', [CheckoutController::class, 'store']);
@@ -45,5 +49,6 @@ Route::middleware(['auth:sanctum', 'throttle:60,1'])->group(function () {
 
     Route::get('/products/{product}/can-review', [ReviewController::class, 'canReview']);
     Route::post('/products/{product}/reviews', [ReviewController::class, 'store']);
+    Route::put('/reviews/{review}', [ReviewController::class, 'update']);
     Route::delete('/reviews/{review}', [ReviewController::class, 'destroy']);
 });

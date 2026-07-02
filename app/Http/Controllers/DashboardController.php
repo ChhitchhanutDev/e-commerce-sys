@@ -29,14 +29,14 @@ class DashboardController extends Controller
                     ->orderByDesc('sold')
                     ->limit(5)
                     ->get(),
-
-                'lowStock' => Product::where('stock', '<=', 5)
-                    ->where('status', true)
-                    ->with('category')
-                    ->orderBy('stock')
-                    ->paginate(50),
             ];
         });
+
+        $data['lowStock'] = Product::where('stock', '<=', 5)
+            ->where('status', true)
+            ->with('category')
+            ->orderBy('stock')
+            ->paginate(50);
 
         return view('pages.dashboard.index', $data);
     }
